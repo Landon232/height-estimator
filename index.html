@@ -1,0 +1,86 @@
+<DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Height Estimator Game</title>
+      <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+      <div class="container">
+        <h1>Height Estimator Game</h1>
+        <p>Enter your details, and I’ll estimate your adult height!</p>
+    
+        <form id="height-form">
+          <label for="age">Your Age:</label>
+          <input type="number" id="age" required /><br />
+    
+          <label for="gender">Your Gender:</label>
+          <select id="gender" required>
+            <option value="">Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select><br />
+    
+          <label for="current-height">Your Current Height (in inches):</label>
+          <input type="number" id="current-height" required /><br />
+    
+          <label for="father-height">Father's Height (in inches):</label>
+          <input type="number" id="father-height" required /><br />
+    
+          <label for="mother-height">Mother's Height (in inches):</label>
+          <input type="number" id="mother-height" required /><br />
+    
+          <button type="submit">Estimate My Height</button>
+        </form>
+    
+        <p id="result"></p>
+        
+        <div class="image-container">
+          <img src="height_chart.png" alt="Height chart illustration" />
+        </div>
+      </div>
+    
+      <script>
+        document.getElementById("height-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+    
+          const age = parseInt(document.getElementById("age").value);
+          const gender = document.getElementById("gender").value;
+          const currentHeight = parseFloat(document.getElementById("current-height").value);
+          const fatherHeight = parseFloat(document.getElementById("father-height").value);
+          const motherHeight = parseFloat(document.getElementById("mother-height").value);
+    
+          if (isNaN(age) || isNaN(currentHeight) || isNaN(fatherHeight) || isNaN(motherHeight) || !gender) {
+            document.getElementById("result").innerText = "Please fill in all fields correctly.";
+            return;
+          }
+    
+          // Mid-Parental Height Formula
+          let midParentalHeight;
+          if (gender === "male") {
+            midParentalHeight = (fatherHeight + motherHeight + 5) / 2;
+          } else {
+            midParentalHeight = (fatherHeight + motherHeight - 5) / 2;
+          }
+    
+          // Adjust based on current height and age
+          // Assuming growth slows down after 18 years old.
+          const remainingGrowth = 18 - age;  // Estimating potential years of growth left
+          const growthFactor = Math.max(0, remainingGrowth / 18); // Growth factor decreases with age
+    
+          // Adjust mid-parental height estimate based on current height and age
+          const heightDifference = midParentalHeight - currentHeight;
+          const estimatedHeight = currentHeight + (heightDifference * growthFactor);
+    
+          // Add random variation (±4 inches) for fun
+          const variation = (Math.random() * 8) - 4;
+          const finalHeightEstimate = estimatedHeight + variation;
+    
+          document.getElementById("result").innerText = 
+            `🎯 Based on your input, your estimated adult height is around ${finalHeightEstimate.toFixed(1)} inches.\n\n📏 This is just an estimate and typically falls within a ±4 inch range. Everyone grows at their own pace!`;
+        });
+      </script>
+    </body>
+    </html>
+img
